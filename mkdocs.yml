@@ -1,0 +1,107 @@
+---
+site_name: MLogo
+site_description: An ML approach to generating logos from text
+site_url: https://billsioros.github.io/mlogo/
+repo_url: https://github.com/billsioros/mlogo
+edit_uri: edit/master/docs/
+repo_name: billsioros/mlogo
+copyright: |
+  Copyright &copy; 2022-2022 <a href="https://github.com/billsioros" target="_blank" rel="noopener">Vasilis Sioros</a>
+
+nav:
+  - Overview: index.md
+  - Jupyter Notebook: src/mlogo.ipynb
+  - Code Reference:
+      - MLogo: src/model.md
+  - Contributing:
+      - Contributing Guidelines: CONTRIBUTING.md
+      - Code Of Conduct: CODE_OF_CONDUCT.md
+  - Changelog: CHANGELOG.md
+  - License: LICENSE.md
+
+theme:
+  name: material
+  features:
+    - search.suggest
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+    - header.autohide
+    - navigation.expand
+    - navigation.indexes
+    - navigation.instant
+    - navigation.prune
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    - toc.integrate
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: green
+      accent: green
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+plugins:
+  - search
+  - mkdocstrings:
+      watch:
+        - src/mlogo
+      default_handler: python
+      handlers:
+        python:
+          paths:
+            - src
+          rendering:
+            show_source: true
+          options:
+            docstring_style: google
+            docstring_options:
+            ignore_init_summary: yes
+            merge_init_into_class: yes
+            show_submodules: no
+  - minify:
+      minify_html: true
+  - mknotebooks
+
+markdown_extensions:
+  - admonition
+  - pymdownx.emoji
+  - pymdownx.magiclink
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist
+  - toc:
+      permalink: ¤
+  - mdx_truly_sane_lists
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/billsioros
+    - icon: fontawesome/brands/docker
+      link: https://github.com/billsioros/mlogo/pkgs/container/mlogo%2Fmlogo
+  version:
+    provider: mike

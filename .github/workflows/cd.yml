@@ -1,0 +1,91 @@
+---
+name: CD
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: relekang/python-semantic-release@v7.28.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2.1.4
+        with:
+          poetry-version: 1.1.13
+
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.in-project true
+
+      - name: Set up cache
+        uses: actions/cache@v3.0.4
+        with:
+          path: .venv
+          key: venv-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      - name: Get the release version
+        run: |
+          export RELEASE_TAG_VERSION="$( poetry run semantic-release print-version --current )"
+          echo "RELEASE_TAG_VERSION=${RELEASE_TAG_VERSION}" >> $GITHUB_ENV
+
+      - name: Publish to GitHub packages
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          registry: docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          image_name: ${{ github.repository }}/mlogo
+          image_tag: ${{ env.RELEASE_TAG_VERSION }},latest
+          context: ./docker/
+
+      - name: Configure git
+        run: |
+          git config --global user.name Docs deploy
+          git config --global user.email docs@dummy.bot.com
+
+      - name: Publish the documentation
+        run: |
+          poetry run mike deploy --push --update-aliases ${RELEASE_TAG_VERSION} latest
+          poetry run mike set-default --push latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_TOKEN}}
+          heroku_app_name: mlogo-ml
+          heroku_email: billsioros97@gmail.com
+          usedocker: true
+          healthcheck: https://mlogo-ml.herokuapp.com/api/v1/monitor/health
+          delay: 30
+          rollbackonhealthcheckfailed: true

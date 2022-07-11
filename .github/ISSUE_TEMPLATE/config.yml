@@ -1,0 +1,9 @@
+---
+blank_issues_enabled: false
+contact_links:
+  - name: Q&A
+    url: https://github.com/billsioros/mlogo/discussions/categories/q-a
+    about: Please ask and answer questions here.
+  - name: Report a security vulnerability
+    url: mailto:billsioros97@gmail.com
+    about: Please report security vulnerabilities here.
