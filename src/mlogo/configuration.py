@@ -1,7 +1,7 @@
 import json
 
 
-class Configuration(object):
+class Configuration:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             if isinstance(value, dict):
