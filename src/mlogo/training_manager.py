@@ -11,7 +11,7 @@ from mlogo.configuration import Configuration
 from mlogo.model import CNNGenerator, MLogoDiscriminator
 
 
-class TrainingManager(object):
+class TrainingManager:
     def __init__(self, configuration: Configuration) -> None:
         self._configuration = configuration
         self._device = configuration.device
